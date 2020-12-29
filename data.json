@@ -1,0 +1,27 @@
+{
+        "sender-email":"your-email@gmail.com",
+        "sender-password":"y0ur_$3cret-P@ssW0rD",
+        "smtp-server":"smtp.gmail.com",
+        "smtp-port":"465",
+        "average-price":"10\u20ac",
+        "guest" :[
+                {
+                    "name":"Alice",
+                    "email":"alice@gmail.com",
+                    "wishgift":"a car",
+                    "exception": ["Bob"]
+                },
+                {
+                    "name":"Bob",
+                    "email":"bob@gmail.com",
+                    "wishgift":"a house",
+                    "exception": []
+                },
+                {
+                    "name":"Charlie",
+                    "email":"charlie@gmail.com",
+                    "wishgift":"a world trip",
+                    "exception": []
+                }
+        ]
+}
