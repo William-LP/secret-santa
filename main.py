@@ -12,7 +12,7 @@ def get_field(json_data, guestname, field):
             return guest[field]  
 
 def load_json_file(jsonfile):    
-    f = open (jsonfile, "r") 
+    f = open (jsonfile, "r", encoding='utf-8') 
     data = json.loads(f.read()) 
     f.close() 
     return data
@@ -45,7 +45,25 @@ sender_email,password,smtp_server,smtp_port = smtp_config(data)
 
 message = """Subject: SEN - Secret Santa
 
-{giver}, tu dois offrir {gift} a {receiver} pour {price} environ. Bon courage !"""
+Oh oh ooohh...
+
+{giver}, tu as été tiré au sort pour être le Père-Noël de {receiver}, et voilà sa commande :
+
+{gift} !
+
+Ta responsabilité est grande, je compte sur toi pour combler son souhait ;D
+
+Je te donne rendez-vous le samedi 9 au soir pour offrir ta trouvaille et découvrir ce que t'as reservé TON Père Noël ;)
+
+Bon courage !
+
+Big Santa
+
+Petit rappel des règles :
+- Budget d'environ {price} pour le cadeau
+- Ne revèle pas qui tu as tiré, cette personne devra le deviner le jour J
+- On emballe le cadeau si c'est possible (papier cadeau, journal... peu importe)
+"""
 
 context = ssl.create_default_context()
 with smtplib.SMTP_SSL(smtp_server, smtp_port, context=context) as server:
@@ -56,5 +74,5 @@ with smtplib.SMTP_SSL(smtp_server, smtp_port, context=context) as server:
         server.sendmail(
             sender_email,
             email,
-            message.format(giver=giver,receiver=receiver,gift=gift,price=data['average-price']).encode('utf-8'),
+            message.format(giver=giver,receiver=receiver,gift=gift.upper(),price=data['average-price']).encode('utf-8'),
         )    
