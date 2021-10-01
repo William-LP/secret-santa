@@ -2,6 +2,7 @@ import json
 import copy
 import random
 import smtplib, ssl
+from art import tprint
 
 def smtp_config(json_data):
     return json_data['sender-email'],json_data['sender-password'],json_data['smtp-server'],json_data['smtp-port']
@@ -33,15 +34,40 @@ def match_guest(json_data, names):
             choose.pop(choose.index(chosen))
         return result    
 
-jsonfile="data.json"
-data = load_json_file(jsonfile)
+tprint("SECRET SANTA")
+print()
+print('+--------------------------------+')
+print('+          CONFIGURATION         +')
+print('+--------------------------------+')
+try :
+    jsonfile="data.json"
+    data = load_json_file(jsonfile)
+    print("- Chargement des paramètres : OK")
+except Exception as e: 
+    print(e)
 
-guest_list=[]
-for guest in data['guest']: 
-    guest_list.append(guest['name'])
-pairs=(match_guest(data, guest_list))
+try :
+    guest_list=[]
+    for guest in data['guest']: 
+        guest_list.append(guest['name'])
+    pairs=(match_guest(data, guest_list))
+    print("- Création des couples aléatoire : OK")
+except Exception as e: 
+    print(e)    
 
-sender_email,password,smtp_server,smtp_port = smtp_config(data)
+try :
+    sender_email,password,smtp_server,smtp_port = smtp_config(data)
+    print("- Configuration SMTP : OK")
+except Exception as e: 
+    print(e)
+
+try :
+    context = ssl.create_default_context()    
+    print("- Création d'un context SSL : OK")
+except Exception as e: 
+    print(e)
+
+
 
 message = """Subject: SEN - Secret Santa
 
@@ -65,14 +91,22 @@ Petit rappel des règles :
 - On emballe le cadeau si c'est possible (papier cadeau, journal... peu importe)
 """
 
-context = ssl.create_default_context()
+
+print()
+print('+--------------------------------+')
+print('+          ENVOIE DES MAILS      +')
+print('+--------------------------------+')
+
 with smtplib.SMTP_SSL(smtp_server, smtp_port, context=context) as server:
     server.login(sender_email, password)
     for giver, receiver in pairs:
+        print("--> Envoie d'un mail à " + giver)
         email = get_field(data,giver,"email")
         gift = get_field(data,receiver,"wishgift")
         server.sendmail(
             sender_email,
             email,
             message.format(giver=giver,receiver=receiver,gift=gift.upper(),price=data['average-price']).encode('utf-8'),
-        )    
+        )   
+print()
+print("Fin d'envoie des mails ! Have fun ;)")
